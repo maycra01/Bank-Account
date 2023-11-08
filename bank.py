@@ -2,50 +2,58 @@ import datetime
 
 class Bank:
     def __init__(self):
-        self.obj_accounts = BankAccount()
+        self.obj_accounts = []
 
-    def bank_check_password(self, acc_name, input_password):
-        if isinstance(BankAccount, acc_name):
-            if self.obj_accounts.acc_check_password(input_password):
-                return True
+    def get_account(self, acc_num: int):
+        print(acc_num)
+        for account in self.obj_accounts:
+            print(account)
+            print(acc_num)
+            print(account.acc_num)
+            if acc_num == account.acc_num:
+                return account
+
             else:
-                self.obj_accounts.pass_attempts += 1
-                print("password incorrect")
-                return False
+                print("Account does not exist")
+
+    def bank_check_password(self, account, input_password):
+        #if isinstance(BankAccount, account):
+        print(account)
+        if account.acc_check_password(input_password):
+            return True
         else:
-            print("Account does not exist")
+            account.pass_attempts += 1
+            print("password incorrect")
+            return False
+
+
+    def add_account(self, new_account):
+        self.obj_accounts.append(new_account)
 
 class User:
-    def __init__(self, name, dob):
-        self.name = name
-        self.dob = dob
+    ...
 
-    def create_account(self):
-
-
-        a
 
 class BankAccount:
-    def __init__(self, initial_balance, acc_num, password, owners):
-        self.name = name
+    def __init__(self, owners, initial_balance, dob, acc_num, password):
+        self.owners = owners
         self.balance = initial_balance
         self.dob = dob
         self.acc_num = acc_num
         self.password = password
         self.log = []
         self.pass_attempts = 0
-        self.owners = owners
 
 
     def __int__(self):
         return self.balance
 
     def __str__(self):
-        return (f"Account Holder: {self.name}\n"
+        return (f"Account Holder: {self.owners}\n"
                 f"Account Number: {self.acc_num}")
 
-    def acc_check_password (self, password):
-        if password != self.password:
+    def acc_check_password (self, import_password):
+        if import_password != self.password:
             print("incorrect password")
             return False
         else:
@@ -83,27 +91,34 @@ class BankAccount:
             f"{datetime.datetime.now()}: {param}")
         pass
 
-my_bank = Bank()
-
 def login():
-    acc_name = input("Please enter your account name")
+    acc_number = input("Please enter your account number")
     password =  input("Please enter your password")
 
-    if Bank.bank_check_password.
+    account = my_bank.get_account(acc_number)
+
+    if my_bank.bank_check_password(account, password):
         print("access granted")
 
     else:
         pass
 
 
+my_account = BankAccount(owners="Maya", acc_num=1234, initial_balance=10, dob="20070328", password="hello")
+new_account = BankAccount(owners="name", acc_num=5678, initial_balance=10, dob="20070328", password="byebye")
 
-my_user = User("maya",20070328)
+my_bank = Bank()
 
-my_account = BankAccount(acc_num=1234, initial_balance=10, password="hello")
-new_account = BankAccount(name="name", acc_num=5678, initial_balance=10, dob="20070328")
+my_bank.add_account(my_account)
+print(my_bank.obj_accounts)
+
+my_bank.add_account(new_account)
+
+print(my_bank.obj_accounts)
+
 
 print(my_account.log)
 print(new_account.log)
 
-def login():
-    print("Please enter your account name")
+
+login()
