@@ -1,15 +1,22 @@
+# sort out password - done
+# TODO sort out CLI
+# TODO make constructor and stuff prettier
+# TODO attach password to user not account => allows me to complete CLI to switch between accounts
+# TODO create unique object names for accounts
+# TODO add a timer to lock you out of your account after a period of time
+
 import datetime
+import hashlib
+import uuid
+
 
 class Bank:
-    def __init__(self):
-        self.obj_accounts = []
+    def __init__(self, accounts):
+        self.accounts_of_bank = accounts
 
     def get_account(self, acc_num: int):
         print(acc_num)
-        for account in self.obj_accounts:
-            print(account)
-            print(acc_num)
-            print(account.acc_num)
+        for account in self.accounts_of_bank:
             if acc_num == account.acc_num:
                 return account
 
@@ -17,32 +24,38 @@ class Bank:
                 print("Account does not exist")
 
     def bank_check_password(self, account, input_password):
-        #if isinstance(BankAccount, account):
         print(account)
         if account.acc_check_password(input_password):
             return True
         else:
             account.pass_attempts += 1
-            print("password incorrect")
             return False
 
-
     def add_account(self, new_account):
-        self.obj_accounts.append(new_account)
+        self.accounts_of_bank.append(new_account)
+
 
 class User:
-    ...
+    def __init__(self, first_name, last_name, dob, password):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.dob = dob
+        self.customerID = uuid.uuid4()  # Assigns unique ID
+        self.password = hashlib.sha3_256(password.encode()).hexdigest() # hashes password (inside or outside of func?)
+
+    def create_account(self,):  # headache for another day
+        ...
 
 
 class BankAccount:
-    def __init__(self, owners, initial_balance, dob, acc_num, password):
+    def __init__(self, owners, acc_num, password):
         self.owners = owners
-        self.balance = initial_balance
-        self.dob = dob
+        self.balance = 0
+        self.doc = ""
         self.acc_num = acc_num
-        self.password = password
         self.log = []
         self.pass_attempts = 0
+        self.password = password
 
 
     def __int__(self):
@@ -54,16 +67,17 @@ class BankAccount:
 
     def acc_check_password (self, import_password):
         if import_password != self.password:
-            print("incorrect password")
+            print("Password Incorrect")
             return False
         else:
             return True
 
-    def credit(self, how_much):
+    def credit(self, how_much, origin=None):
         self.balance += how_much
-        self.log_event(f"credited {how_much}; new balance {self.balance}")
+        self.log_event(f"credited {how_much}; from {origin}; new balance {self.balance}"
+                       if origin else f"credited {how_much}; new balance {self.balance}")
 
-        return self.balance
+        return self.balance  # why???
 
     def debit(self, how_much):
         if self.balance < how_much:
@@ -75,7 +89,7 @@ class BankAccount:
     def transfer_out(self, how_much, where_to):
         if self.balance >= how_much:
             self.balance -= how_much
-            where_to.credit(how_much)
+            where_to.credit(how_much, self.acc_num)
             self.log_event(f"transfered {how_much} to the account {where_to.acc_num}; new balance {self.balance}")
         else:
             print(f"transaction denied, not enough balance")
@@ -91,30 +105,24 @@ class BankAccount:
             f"{datetime.datetime.now()}: {param}")
         pass
 
-def login():
-    acc_number = input("Please enter your account number")
-    password =  input("Please enter your password")
-
-    account = my_bank.get_account(acc_number)
-
-    if my_bank.bank_check_password(account, password):
-        print("access granted")
-
-    else:
+    def set_password(self, new_password):
+        self.password = new_password
         pass
 
 
-my_account = BankAccount(owners="Maya", acc_num=1234, initial_balance=10, dob="20070328", password="hello")
-new_account = BankAccount(owners="name", acc_num=5678, initial_balance=10, dob="20070328", password="byebye")
+
+
+
+new_account = BankAccount(owners="name", acc_num=5678, dob="20070328", password="byebye")
 
 my_bank = Bank()
 
 my_bank.add_account(my_account)
-print(my_bank.obj_accounts)
+print(my_bank.accounts_of_bank)
 
 my_bank.add_account(new_account)
 
-print(my_bank.obj_accounts)
+print(my_bank.accounts_of_bank)
 
 
 print(my_account.log)
